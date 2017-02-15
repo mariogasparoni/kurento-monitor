@@ -1,6 +1,8 @@
 const config = require('config')
 const kurento = require('kurento-client')
 
+process.env.NODE_TLS_REJECT_UNAUTHORIZED=0;
+
 function getKurentoClient(callback) {
     var wsUri = config.get('kurento.server.uri')
 
@@ -55,8 +57,6 @@ getKurentoClient(function(err, _kurentoClient) {
         return;
     }
 
-    console.log('Connected to kurento server');
-
     _kurentoClient.getServerManager(function (error,server) {
         if (error) {
             console.log('error')
@@ -72,7 +72,9 @@ getKurentoClient(function(err, _kurentoClient) {
             getPipelinesInfo(server, function( pipelinesInfo ) {
                  //add pipeline info to server info
                 serverInfo.pipelines = pipelinesInfo;
-                console.log(JSON.stringify(serverInfo))
+                console.log(JSON.stringify(serverInfo));
+                _kurentoClient.close();
+                process.exit();
             })
         })
     })
