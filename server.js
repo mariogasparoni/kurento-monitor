@@ -1,6 +1,8 @@
 const config = require('config')
 const kurento = require('kurento-client')
 
+const spacesNum = 2;
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED=0;
 
 function getKurentoClient(callback) {
@@ -10,7 +12,7 @@ function getKurentoClient(callback) {
         if (err) {
             console.log("Could not find media server at address " + wsUri);
             return callback("Could not find media server at address " + wsUri
-                + ". Exiting with error " + err);
+                + ". " + err);
         }
 
         callback(null, _kurentoClient);
@@ -20,14 +22,14 @@ function getKurentoClient(callback) {
 
 function getPipelinesInfo(server, callback) {
     if (!server) {
-        return callback(null);
+        return callback({});
     }
 
     var _pipelines = {};
 
     server.getPipelines(function(error,pipelines){
         if (error || (pipelines && pipelines.length < 1)) {
-            return callback(null)
+            return callback({})
         }
 
         var childsCounter = 0;
@@ -44,7 +46,7 @@ function getPipelinesInfo(server, callback) {
                 childsCounter++;
                 if(childsCounter == array.length) {
                     //last child got, return
-                    return callback(_pipelines)
+                    return callback(_pipelines||{})
                 }
             })
         })
@@ -71,8 +73,9 @@ getKurentoClient(function(err, _kurentoClient) {
 
             getPipelinesInfo(server, function( pipelinesInfo ) {
                  //add pipeline info to server info
+                serverInfo.pipelinesNumber = Object.keys(pipelinesInfo).length;
                 serverInfo.pipelines = pipelinesInfo;
-                console.log(JSON.stringify(serverInfo));
+                console.log(JSON.stringify(serverInfo,null,spacesNum));
                 _kurentoClient.close();
                 process.exit();
             })
