@@ -3,7 +3,7 @@
         "server" : {
             "uri" : "wss://127.0.0.1:8433/kurento"
         },
-      "reject_self_signed" : false
+      "reject_self_signed" : 0
     },
     "space_width" : 0
 }
