@@ -7,6 +7,12 @@
 const config = require('config');
 const kurento = require('kurento-client');
 
+const console_stamp_options = {
+  pattern: "dd-mm HH:MM:ss"
+};
+
+require('console-stamp')(console,console_stamp_options);
+
 const spacesNum = config.get('space_width');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED =
