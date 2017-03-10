@@ -5,5 +5,9 @@
         },
       "reject_self_signed" : 0
     },
-    "space_width" : 0
+    "space_width" : 0,
+    "pipelines_only": 1,
+    "keep_monitoring" : 1,
+    "info_interval" : 1000,
+    "file_output" : 1
 }

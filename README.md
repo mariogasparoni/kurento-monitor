@@ -7,7 +7,24 @@ The retrieved data is printed to the standard output in a JSON format
 #Installing
 ```
 npm install
+
 ```
+#Options
+`reject_self_signed : 0` allows monitor accept unauthorized (self-signed)
+    certificates
+
+`pipelines_only : 1` monitor will output only the number of pipelines
+
+`keep_monitoring : 1` tells monitor to keep monitoring until CTRL+c/SIGINT
+    signal is received. Otherwise, monitor will run and output it's data
+    one single time
+
+`info_interval: 2000` set interval (ms) for the `keep_monitoring` option
+
+`space_width :` Number of white spaces used as identation to print the output.
+Ignored when `pipelines_only` is set to 1
+
+`file_output : 1` monitor will also output it's data to a '.out' file
 
 #Running
 ```
