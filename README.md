@@ -4,12 +4,14 @@ moment, such as pipelines, player endpoints, rtp endpoints, etc.
 
 The retrieved data is printed to the standard output in a JSON format
 
-#Installing
+Installing
+-------
 ```
 npm install
 
 ```
-#Options
+Options
+-------
 `reject_self_signed : 0` allows monitor accept unauthorized (self-signed)
     certificates
 
@@ -26,13 +28,15 @@ Ignored when `pipelines_only` is set to 1
 
 `file_output : 1` monitor will also output it's data to a '.out' file
 
-#Running
+Running
+-------
 ```
 node server <Websocket-URI>
 ```
 Where Websocket-URI is the ws/wss URI of the kurento media server.
 
-#Example
+Example
+-------
 ```
 node server wss://127.0.0.1:8443/kurento
 ```
