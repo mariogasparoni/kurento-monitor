@@ -6,10 +6,32 @@ The retrieved data is printed to the standard output in a JSON format
 
 Installing
 -------
-```
+```sh
 npm install
 
 ```
+Setup and Running
+-------
+
+Create a config/default.json file , or copy the example config
+```sh
+cd config
+cp default.example.json default.json
+```
+
+then start it
+
+```sh
+node server <Websocket-URI>
+```
+Where Websocket-URI is the ws/wss URI of the kurento media server.
+
+Example of running
+
+```sh
+node server wss://127.0.0.1:8443/kurento
+```
+
 Options
 -------
 `reject_self_signed : 0` allows monitor accept unauthorized (self-signed)
@@ -28,19 +50,7 @@ Ignored when `pipelines_only` is set to 1
 
 `file_output : 1` monitor will also output it's data to a '.out' file
 
-Running
 -------
-```
-node server <Websocket-URI>
-```
-Where Websocket-URI is the ws/wss URI of the kurento media server.
-
-Example
--------
-```
-node server wss://127.0.0.1:8443/kurento
-```
-
 I called this app kurento-monitor because i used it when i had to monitor
 the status of the Kurento Media Server while running a few other
 applications. This app was handy to check if those apps were using too much
