@@ -7,6 +7,7 @@
     },
     "space_width" : 0,
     "pipelines_only": 1,
+    "graph_only": 0,
     "keep_monitoring" : 1,
     "info_interval" : 1000,
     "file_output" : 1
