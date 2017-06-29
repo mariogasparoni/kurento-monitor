@@ -15,6 +15,8 @@ npm install
 
 `pipelines_only : 1` monitor will output only the number of pipelines
 
+`graph_only : 1` monitor will output the DOT graph, instead of server JSON's
+
 `keep_monitoring : 1` tells monitor to keep monitoring until CTRL+c/SIGINT
     signal is received. Otherwise, monitor will run and output it's data
     one single time

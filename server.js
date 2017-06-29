@@ -8,6 +8,7 @@ const config = require('config');
 const kurento = require('kurento-client');
 const fs = require('fs');
 const file_output = config.get('file_output');
+const graph_only = config.get('graph_only');
 
 const logger_file_writer = getFileWriter();
 
@@ -26,7 +27,10 @@ var logger = new console.Console(logger_file_writer,logger_file_writer);
 
 const console_stamp = require('console-stamp');
 console_stamp(logger,logger_options);
-console_stamp(console,console_stamp_options);
+
+if (!graph_only) {
+  console_stamp(console,console_stamp_options);
+}
 
 const spacesNum = config.get('space_width');
 
@@ -54,14 +58,18 @@ function getKurentoClient(callback) {
 
 function getPipelinesInfo(server, callback) {
   if (!server) {
-    return callback({});
+    return callback('error - failed to find server');
   }
 
   var _pipelines = {};
 
   server.getPipelines(function(error,pipelines){
-    if (error || (pipelines && pipelines.length < 1)) {
-      return callback({});
+    if (error) {
+      return callback(error);
+    }
+
+    if (pipelines && (pipelines.length < 1)) {
+      return callback(null,_pipelines);
     }
 
     var childsCounter = 0;
@@ -74,7 +82,7 @@ function getPipelinesInfo(server, callback) {
         childsCounter++;
         if(childsCounter == array.length) {
           //last child got, return
-          return callback(_pipelines||{});
+          return callback(null,_pipelines);
         }
       })
     })
@@ -83,34 +91,57 @@ function getPipelinesInfo(server, callback) {
 
 function output(data) {
   console.log(data);
-  if (file_output) {
+  if (file_output && logger) {
     logger.log(data);
   }
 }
 
-function showInfo(server) {
+function getInfo(server, callback) {
   if (!server) {
-    return;
+    return callback('error - failed to find server');
   }
 
   server.getInfo(function(error,serverInfo) {
     if (error) {
-      console.log(error);
-      exit(1);
+      return callback(error);
     }
 
-    getPipelinesInfo(server, function( pipelinesInfo ) {
+    getPipelinesInfo(server, function( error, pipelinesInfo ) {
+      if (error) {
+        return callback(error);
+      }
+
       var pipelinesNumber = Object.keys(pipelinesInfo).length;
       if (pipelines_only) {
-        output(pipelinesNumber);
+        return callback(pipelinesNumber);
       } else {
         //add pipeline info to server info
         serverInfo.pipelinesNumber = pipelinesNumber;
         serverInfo.pipelines = pipelinesInfo;
-        output(JSON.stringify(serverInfo,null,spacesNum));
+        return callback(JSON.stringify(serverInfo,null,spacesNum));
       }
-    })
+    });
   })
+}
+
+function getGraph(server, callback){
+  if (!server) {
+    return callback('error - failed to find server');
+  }
+
+  server.getPipelines(function (error, pipelines) {
+    if (error) {
+      return callback('error - failed to get pipelines');
+    }
+
+    var pipeline = pipelines[0];
+    pipeline.getGstreamerDot('SHOW_CAPS_DETAILS', function(error, dotGraph) {
+      if (error) {
+        return callback('error - failed to get graph');
+      }
+      return callback(dotGraph);
+    });
+  });
 }
 
 function exit (code) {
@@ -161,10 +192,15 @@ function start () {
         exit(1);
       }
 
-      showInfo(server);
-      if (keep_monitoring) {
-        setInterval(showInfo, info_interval, server);
-      }
+      var info = graph_only ? getGraph : getInfo ;
+      info(server, function(data) {
+        output(data);
+        if (keep_monitoring) {
+          setInterval(info, info_interval, server, output);
+        } else {
+          stop();
+        }
+      });
     })
   });
 }
