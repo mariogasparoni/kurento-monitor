@@ -135,7 +135,7 @@ function getGraph(server, callback){
     }
 
     var pipeline = pipelines[0];
-    pipeline.getGstreamerDot('SHOW_CAPS_DETAILS', function(error, dotGraph) {
+    pipeline.getGstreamerDot('SHOW_FULL_PARAMS', function(error, dotGraph) {
       if (error) {
         return callback('error - failed to get graph');
       }
