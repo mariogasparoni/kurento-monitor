@@ -5,31 +5,35 @@
 */
 
 const config = require('config');
+const console_stamp = require('console-stamp');
 const kurento = require('kurento-client');
 const fs = require('fs');
 const file_output = config.get('file_output');
 const graph_only = config.get('graph_only');
 
-const logger_file_writer = getFileWriter();
+var logger = null;
+var logger_file_writer = null;
 
-const logger_options = {
-  pattern: "dd-mm HH:MM:ss",
-  label: false,
-  stdout: logger_file_writer
-};
+if (file_output) {
+  logger_file_writer = getFileWriter();
+  logger = new console.Console(logger_file_writer, logger_file_writer);
 
-const console_stamp_options = {
-  pattern: "dd-mm HH:MM:ss",
-  label: false
-};
+  const logger_options = {
+    pattern: "dd-mm HH:MM:ss",
+    label: false,
+    stdout: logger_file_writer
+  };
 
-var logger = new console.Console(logger_file_writer,logger_file_writer);
-
-const console_stamp = require('console-stamp');
-console_stamp(logger,logger_options);
+  console_stamp(logger, logger_options);
+}
 
 if (!graph_only) {
-  console_stamp(console,console_stamp_options);
+  const console_stamp_options = {
+    pattern: "dd-mm HH:MM:ss",
+    label: false
+  };
+
+  console_stamp(console, console_stamp_options);
 }
 
 const spacesNum = config.get('space_width');
