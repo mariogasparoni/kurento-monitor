@@ -138,13 +138,15 @@ function getGraph(server, callback){
       return callback('error - failed to get pipelines');
     }
 
-    var pipeline = pipelines[0];
-    pipeline.getGstreamerDot('SHOW_CAPS_DETAILS', function(error, dotGraph) {
-      if (error) {
-        return callback('error - failed to get graph');
-      }
-      return callback(dotGraph);
-    });
+    if (pipelines.length > 0) {
+      var pipeline = pipelines[0];
+      pipeline.getGstreamerDot('SHOW_CAPS_DETAILS', function(error, dotGraph) {
+        if (error) {
+          return callback('error - failed to get graph');
+        }
+        return callback(dotGraph);
+      });
+    } else { return callback('no pipelines'); }
   });
 }
 
