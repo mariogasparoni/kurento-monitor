@@ -5,6 +5,7 @@
         },
       "reject_self_signed" : 0
     },
+    "log_prefix": "dd-mm HH:MM:ss",
     "space_width" : 0,
     "pipelines_only": 1,
     "graph_only": 0,

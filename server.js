@@ -27,9 +27,9 @@ if (file_output) {
   console_stamp(logger, logger_options);
 }
 
-if (!graph_only) {
+if (!graph_only && config.get('log_prefix') !== false) {
   const console_stamp_options = {
-    pattern: "dd-mm HH:MM:ss",
+    pattern: config.get('log_prefix') || 'dd-mm HH:MM:ss',
     label: false
   };
 
